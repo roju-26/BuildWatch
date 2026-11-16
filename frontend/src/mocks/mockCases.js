@@ -1,0 +1,33 @@
+// Shape follows the shared data contract in the master document.
+// [DECISION REQUIRED] detected_debris and image format are not defined yet.
+// Assumed: detected_debris = array of category strings, image = URL string.
+export const mockCases = [
+  {
+    case_id: "BW-2026-00001",
+    reporter_role: "CITIZEN",
+    description: "Pile of rubble blocking the footpath near the junction.",
+    latitude: 12.9716,
+    longitude: 77.5946,
+    public_area_type: "FOOTPATH",
+    image: "https://placehold.co/600x400?text=Rubble",
+    detected_debris: ["RUBBLE"],
+    severity: 2,
+    status: "REPORTED",
+    created_at: "2026-11-10T09:30:00Z",
+    updated_at: "2026-11-10T09:30:00Z",
+  },
+  {
+    case_id: "BW-2026-00002",
+    reporter_role: "FIELD_WORKER",
+    description: "Metal rods lying on the road.",
+    latitude: 12.9352,
+    longitude: 77.6245,
+    public_area_type: "ROAD",
+    image: "https://placehold.co/600x400?text=Metal+Rods",
+    detected_debris: ["METAL_RODS"],
+    severity: 3,
+    status: "UNDER_REVIEW",
+    created_at: "2026-11-12T14:10:00Z",
+    updated_at: "2026-11-13T08:00:00Z",
+  },
+];
