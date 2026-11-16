@@ -60,74 +60,93 @@ export default function ReportForm() {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{ maxWidth: 600, margin: "0 auto", padding: 16 }}
-    >
+    <form className="card" onSubmit={handleSubmit}>
       <h2>Report an Obstruction</h2>
 
-      <label>Reporter role</label>
-      <select value={role} onChange={(e) => setRole(e.target.value)}>
-        <option value={ROLES.CITIZEN}>Citizen</option>
-        <option value={ROLES.FIELD_WORKER}>Field worker</option>
-      </select>
+      <div className="field">
+        <label>Reporter role</label>
+        <select value={role} onChange={(e) => setRole(e.target.value)}>
+          <option value={ROLES.CITIZEN}>Citizen</option>
+          <option value={ROLES.FIELD_WORKER}>Field worker</option>
+        </select>
+      </div>
 
-      <label>Photograph</label>
-      <input
-        type="file"
-        accept="image/*"
-        onChange={(e) => setImage(e.target.files[0])}
-      />
-      {image && (
-        <img
-          src={URL.createObjectURL(image)}
-          alt="preview"
-          style={{ maxWidth: "100%", marginTop: 8 }}
+      <div className="field">
+        <span className="label">Photograph</span>
+        <label className="dropzone">
+          <span className="icon">📷</span>
+          {image ? image.name : "Click to upload a photo of the obstruction"}
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setImage(e.target.files[0])}
+          />
+        </label>
+        {image && (
+          <img
+            className="preview"
+            src={URL.createObjectURL(image)}
+            alt="preview"
+          />
+        )}
+      </div>
+
+      <div className="field">
+        <label>Description</label>
+        <textarea
+          rows={3}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Describe the obstruction"
         />
-      )}
+      </div>
 
-      <label>Description</label>
-      <textarea
-        rows={3}
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        placeholder="Describe the obstruction"
-      />
+      <div className="field">
+        <label>Affected public area</label>
+        <select value={areaType} onChange={(e) => setAreaType(e.target.value)}>
+          {PUBLIC_AREA_TYPES.map((t) => (
+            <option key={t} value={t}>
+              {t}
+            </option>
+          ))}
+        </select>
+      </div>
 
-      <label>Affected public area</label>
-      <select value={areaType} onChange={(e) => setAreaType(e.target.value)}>
-        {PUBLIC_AREA_TYPES.map((t) => (
-          <option key={t} value={t}>
-            {t}
-          </option>
-        ))}
-      </select>
+      <div className="field">
+        <span className="label">Location (click on the map)</span>
+        <button
+          type="button"
+          className="btn btn-secondary"
+          onClick={useMyLocation}
+        >
+          📍 Use my location
+        </button>
+        <div className="map-wrap">
+          <LocationPicker
+            latitude={latitude}
+            longitude={longitude}
+            onPick={handlePick}
+          />
+        </div>
+        {latitude !== null && (
+          <p className="coords">
+            Selected: {latitude.toFixed(5)}, {longitude.toFixed(5)}
+          </p>
+        )}
+      </div>
 
-      <label>Location (click on the map)</label>
-      <button type="button" onClick={useMyLocation}>
-        Use my location
-      </button>
-      <LocationPicker
-        latitude={latitude}
-        longitude={longitude}
-        onPick={handlePick}
-      />
-      {latitude !== null && (
-        <p>
-          Selected: {latitude.toFixed(5)}, {longitude.toFixed(5)}
-        </p>
-      )}
+      {error && <div className="alert-error">{error}</div>}
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
-      <button type="submit" disabled={loading}>
+      <button type="submit" className="btn btn-primary" disabled={loading}>
         {loading ? "Submitting..." : "Submit report"}
       </button>
 
       {result && (
-        <p>
-          Report submitted. Case ID: <b>{result.case_id}</b>
-        </p>
+        <div className="alert-success">
+          ✅ Report submitted successfully
+          <br />
+          <span className="case-id">{result.case_id}</span>
+        </div>
       )}
     </form>
   );
