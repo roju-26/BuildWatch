@@ -3,3 +3,5 @@ export const API_BASE_URL =
 
 // true = use mock data, false = call the real FastAPI backend
 export const USE_MOCK = import.meta.env.VITE_USE_MOCK === "true";
+// Default map centre [latitude, longitude]. Change it here only.
+export const DEFAULT_MAP_CENTER = [12.9716, 77.5946];
