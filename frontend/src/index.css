@@ -735,3 +735,14 @@ textarea:focus {
   font-weight: 600;
   border-bottom: 1px solid #fde68a;
 }
+/* ================= EVIDENCE REPORT ================= */
+.evidence-box {
+  margin-top: 22px;
+  padding: 18px;
+  background: #f0fdfa;
+  border: 1px solid #99f6e4;
+  border-radius: 14px;
+}
+.evidence-box h3 {
+  margin: 0 0 6px;
+}

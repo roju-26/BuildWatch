@@ -5,6 +5,7 @@ import { StatusBadge, SeverityBadge } from "../components/Badge";
 import LocationPicker from "../components/LocationPicker";
 import BeforeAfter from "../components/BeforeAfter";
 import FollowUpUpload from "../components/FollowUpUpload";
+import EvidenceReportButton from "../components/EvidenceReportButton";
 
 function formatDate(value) {
   return new Date(value).toLocaleString();
@@ -40,7 +41,7 @@ export default function CaseDetails() {
     );
   if (!report) return <div className="card">Case not found.</div>;
 
-  const canAddFollowUp = report.status !== "CLOSED";
+  const isClosed = report.status === "CLOSED";
 
   return (
     <div className="card">
@@ -96,9 +97,9 @@ export default function CaseDetails() {
         followUps={report.follow_ups}
       />
 
-      {canAddFollowUp && (
-        <FollowUpUpload caseId={report.case_id} onDone={load} />
-      )}
+      {!isClosed && <FollowUpUpload caseId={report.case_id} onDone={load} />}
+
+      {isClosed && <EvidenceReportButton caseId={report.case_id} />}
 
       <h3>Status history</h3>
       <ul className="timeline">
