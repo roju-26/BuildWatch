@@ -1,0 +1,5 @@
+.venv/
+__pycache__/
+ai/datasets/
+ai/runs/
+/yolo*.pt
