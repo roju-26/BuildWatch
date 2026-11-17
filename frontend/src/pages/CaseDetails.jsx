@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getReport, getReportHistory } from "../services/api";
 import { StatusBadge, SeverityBadge } from "../components/Badge";
 import LocationPicker from "../components/LocationPicker";
+import BeforeAfter from "../components/BeforeAfter";
+import FollowUpUpload from "../components/FollowUpUpload";
 
 function formatDate(value) {
   return new Date(value).toLocaleString();
@@ -15,8 +17,8 @@ export default function CaseDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    Promise.all([getReport(caseId), getReportHistory(caseId)])
+  const load = useCallback(() => {
+    return Promise.all([getReport(caseId), getReportHistory(caseId)])
       .then(([r, h]) => {
         setReport(r);
         setHistory(h);
@@ -24,6 +26,10 @@ export default function CaseDetails() {
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, [caseId]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
 
   if (loading) return <div className="card">Loading...</div>;
   if (error)
@@ -33,6 +39,8 @@ export default function CaseDetails() {
       </div>
     );
   if (!report) return <div className="card">Case not found.</div>;
+
+  const canAddFollowUp = report.status !== "CLOSED";
 
   return (
     <div className="card">
@@ -54,7 +62,9 @@ export default function CaseDetails() {
       <div className="detail-grid">
         <div>
           <span className="label">Debris detected</span>
-          {report.detected_debris.join(", ")}
+          {report.detected_debris.length
+            ? report.detected_debris.join(", ")
+            : "Awaiting AI analysis"}
         </div>
         <div>
           <span className="label">Reported by</span>
@@ -78,6 +88,17 @@ export default function CaseDetails() {
           onPick={() => {}}
         />
       </div>
+
+      <h3>Before / after</h3>
+      <BeforeAfter
+        beforeImage={report.image}
+        beforeDate={report.created_at}
+        followUps={report.follow_ups}
+      />
+
+      {canAddFollowUp && (
+        <FollowUpUpload caseId={report.case_id} onDone={load} />
+      )}
 
       <h3>Status history</h3>
       <ul className="timeline">
