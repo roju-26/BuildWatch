@@ -86,3 +86,5 @@ export const mockHistory = {
     },
   ],
 };
+// Follow-up photos added during the demo. Resets when the page is refreshed.
+export const mockFollowUps = {};

@@ -5,6 +5,7 @@ import CaseList from "./pages/CaseList";
 import CaseDetails from "./pages/CaseDetails";
 import AdminDashboard from "./pages/AdminDashboard";
 import Hotspots from "./pages/Hotspots";
+import DemoBanner from "./components/DemoBanner";
 
 function Page({ children, wide }) {
   return (
@@ -17,6 +18,7 @@ function Page({ children, wide }) {
 function App() {
   return (
     <BrowserRouter>
+      <DemoBanner />
       <nav className="navbar">
         <NavLink to="/" className="brand">
           🏗️ BuildWatch
