@@ -1,7 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+import os
+from fastapi.staticfiles import StaticFiles
 from app.api import reports
+from app.config import settings
 
 app = FastAPI(title="BuildWatch API")
 
@@ -13,9 +16,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+os.makedirs(settings.IMAGE_UPLOAD_PATH, exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=settings.IMAGE_UPLOAD_PATH), name="uploads")
 app.include_router(reports.router)
 
 
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
