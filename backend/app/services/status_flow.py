@@ -14,8 +14,9 @@ _ORDER = [
 
 def is_allowed(current: CaseStatus, new: CaseStatus) -> bool:
     """Allowed: the next step forward, or back to UNDER_REVIEW (not from CLOSED).
+    A case can never "move" to the status it already has.
     [DECISION REQUIRED] confirm these rules with the team."""
-    if current == CaseStatus.CLOSED:
+    if current == CaseStatus.CLOSED or new == current:
         return False
     if new == CaseStatus.UNDER_REVIEW and current != CaseStatus.REPORTED:
         return True
