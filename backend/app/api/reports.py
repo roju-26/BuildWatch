@@ -9,6 +9,7 @@ from app.database.session import get_db
 from app.enums import CaseStatus, PublicAreaType, Role
 from app.schemas.case import Case, HistoryItem, StatusUpdate
 from app.services.case_id import generate_case_id
+from app.services.severity import calculate_severity
 from app.services.status_flow import is_allowed
 from app.utils.image_storage import save_image
 
@@ -121,7 +122,7 @@ def create_report(
             "INSERT INTO cases (case_id, reporter_role, description, latitude, longitude, "
             "location, public_area_type, severity, status) VALUES "
             "(:id, :role, :desc, :lat, :lng, "
-            "ST_SetSRID(ST_MakePoint(:lng, :lat), 4326)::geography, :area, 1, 'REPORTED')"
+            "ST_SetSRID(ST_MakePoint(:lng, :lat), 4326)::geography, :area, :sev, 'REPORTED')"
         ),
         {
             "id": case_id,
@@ -129,7 +130,7 @@ def create_report(
             "desc": description,
             "lat": latitude,
             "lng": longitude,
-            "area": public_area_type.value,
+            "area": public_area_type.value, "sev": calculate_severity(None, public_area_type.value),
         },
     )
     db.execute(
@@ -176,3 +177,4 @@ def update_status(case_id: str, body: StatusUpdate, db: Session = Depends(get_db
     )
     db.commit()
     return get_report(case_id, db)
+
