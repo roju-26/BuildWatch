@@ -157,3 +157,27 @@ def create_report(
     ]
     return new_case
 
+
+
+from app.schemas.case import StatusUpdate
+from app.services.status_flow import is_allowed
+
+
+@router.put("/{case_id}/status", response_model=Case)
+def update_status(case_id: str, body: StatusUpdate):
+    for c in _CASES:
+        if c["case_id"] == case_id:
+            current = CaseStatus(c["status"])
+            if not is_allowed(current, body.status):
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Cannot change status from {current.value} to {body.status.value}",
+                )
+            now = datetime.now(timezone.utc)
+            c["status"] = body.status.value
+            c["updated_at"] = now
+            _HISTORY[case_id].append(
+                {"status": body.status.value, "changed_at": now, "note": body.note}
+            )
+            return c
+    raise HTTPException(status_code=404, detail="Case not found")
